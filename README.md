@@ -1,0 +1,1 @@
+End-of-degree project which consists of implementing a Discord-like application in React.
