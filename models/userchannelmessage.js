@@ -1,9 +1,10 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database.js";
 import { User } from "./user.js";
+import { Channel } from "./channel.js";
 
-export const UserMessageUsers = sequelize.define(
-  "UserMessageUsers",
+export const UserChannelMessage = sequelize.define(
+  "UserChannelMessage",
   {
     id: {
         type: DataTypes.UUID,
@@ -18,4 +19,5 @@ export const UserMessageUsers = sequelize.define(
   }
 );
 
-User.belongsToMany(User, { as: "MessageUsers", through: UserMessageUsers });
+User.belongsToMany(Channel, { through: UserChannelMessage });
+Channel.belongsToMany(User, { through: UserChannelMessage });
