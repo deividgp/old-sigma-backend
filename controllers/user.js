@@ -1,8 +1,7 @@
-import { User } from "./models/user.js"
-import { UserChannelMessage } from "./models/userchannelmessage.js"
-import { UserServers } from "./models/userservers.js"
-import { UserFriends } from "./models/userfriends.js"
-import { UserMessageUsers } from "./models/usermessageusers.js"
+import { User } from "../models/user.js"
+import { UserServers } from "../models/userservers.js"
+import { UserFriends } from "../models/userfriends.js"
+import { UserMessageUsers } from "../models/usermessageusers.js"
 
 export async function createUser(req, res) {
     const { username, password, email } = req.body;
@@ -36,10 +35,10 @@ export async function createUser(req, res) {
 }
 
 export async function updateUser(req, res) {
+    const { id } = req.params;
+    const { username, tag, email } = req.body;
+
     try {
-        const { id } = req.params;
-        const { username, tag, email } = req.body;
-    
         const user = await User.findByPk(id);
         user.username = username;
         user.tag = tag;
@@ -105,5 +104,98 @@ export async function getUserServers(req, res) {
         res.json(servers);
     } catch (e) {
         return res.status(500).json({ message: e.message });
+    }
+}
+
+export async function joinServer(req, res) {
+    const { id } = req.params;
+    const { serverId } = req.body;
+
+    try {
+        let newUserServer = await UserServers.create(
+            {
+                id,
+                serverId,
+                joined: Date.now()
+            },
+            {
+                fields: ["UserId", "ServerId", "joined"],
+            }
+        );
+        return res.json(newUserServer);
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+    res.json("received");
+}
+
+export async function leaveServer(req, res) {
+    const { id } = req.params;
+    const { serverId } = req.body;
+
+    try {
+        await UserServers.destroy({
+            where: {
+                ServerId: serverId,
+                UserId: id
+            },
+        });
+        return res.sendStatus(204);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function addFriend(req, res) {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    try {
+        let newFriend = await UserFriends.create(
+            {
+                UserId: id,
+                FriendId: userId,
+                accepted: false
+            },
+            {
+                fields: ["UserId", "FriendId", "accepted"],
+            }
+        );
+        return res.json(newFriend);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function deleteFriend(req, res) {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    try {
+        await UserServers.destroy({
+            where: {
+                UserId: id,
+                FriendId: userId
+            },
+        });
+        return res.sendStatus(204);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function acceptFriend(req, res) {
+    const { id } = req.params;
+    const { userId } = req.body;
+    
+    try {
+        const friend = await User.findOne({ where: { UserId: id, FriendId: userId } });
+        friend.accepted = true;
+        await friend.save();
+        res.json(friend);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 }

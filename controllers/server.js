@@ -1,6 +1,6 @@
-import { UserServers } from "./models/userservers.js"
-import { Server } from "./models/server.js"
-import { Channel } from "./models/channel.js"
+import { UserServers } from "../models/userservers.js"
+import { Server } from "../models/server.js"
+import { Channel } from "../models/channel.js"
 
 export async function createServer(req, res) {
     const { name } = req.body;
@@ -24,10 +24,10 @@ export async function createServer(req, res) {
 }
 
 export async function updateServer(req, res) {
+    const { id } = req.params;
+    const { name } = req.body;
+
     try {
-        const { id } = req.params;
-        const { name } = req.body;
-    
         const server = await Server.findByPk(id);
         server.name = name;
         await server.save();
@@ -83,5 +83,46 @@ export async function getServerUsers(req, res) {
         res.json(users);
     } catch (e) {
         return res.status(500).json({ message: e.message });
+    }
+}
+
+export async function addUserServer(req, res) {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    try {
+        let newUserServer = await UserServers.create(
+            {
+                id,
+                userId,
+                joined: Date.now()
+            },
+            {
+                fields: ["ServerId", "UserId", "joined"],
+            }
+        );
+        return res.json(newUserServer);
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+    res.json("received");
+}
+
+export async function deleteUserServer(req, res) {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    try {
+        await UserServers.destroy({
+            where: {
+                ServerId: id,
+                UserId: userId
+            },
+        });
+        return res.sendStatus(204);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 }

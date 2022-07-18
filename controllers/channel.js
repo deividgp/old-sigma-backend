@@ -1,5 +1,5 @@
-import { UserChannelMessage } from "./models/userchannelmessage.js"
-import { Channel } from "./models/channel.js"
+import { UserChannelMessage } from "../models/userchannelmessage.js"
+import { Channel } from "../models/channel.js"
 import uuid from "uuid4"
 
 export async function createChannel(req, res) {
@@ -11,7 +11,7 @@ export async function createChannel(req, res) {
                 name, serverId
             },
             {
-                fields: ["name", "serverId"],
+                fields: ["name", "ServerId"],
             }
         );
         return res.json(newChannel);
@@ -24,10 +24,10 @@ export async function createChannel(req, res) {
 }
 
 export async function updateChannel(req, res) {
+    const { id } = req.params;
+    const { name } = req.body;
+
     try {
-        const { id } = req.params;
-        const { name } = req.body;
-    
         const channel = await Channel.findByPk(id);
         channel.name = name;
         await channel.save();
