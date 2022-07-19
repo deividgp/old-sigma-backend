@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../database.js";
+import sequelize from "../database.js";
 import { Server } from "./server.js";
+import bcrypt from "bcryptjs";
 
 export const User = sequelize.define(
   "User",
@@ -26,14 +27,24 @@ export const User = sequelize.define(
         type: DataTypes.STRING,
         allowNull: false
     },
+    role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "User"
+    },
     profilePicture: {
         type: DataTypes.STRING,
         allowNull: true
-    }
+    },
+    active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
   }
 );
 
-/*User.beforeCreate(async (user) => {
+User.beforeCreate(async (user) => {
     user.password = await user.generatePasswordHash();
 });
 
@@ -41,7 +52,11 @@ User.prototype.generatePasswordHash = function () {
     if (this.password) {
         return bcrypt.hash(this.password, 10);
     }
-};*/
+};
+
+User.prototype.validPassword = function (password) {
+    return bcrypt.compareSync(password, this.password);
+}
 
 User.hasMany(Server, {
     foreignkey: "ownerId",

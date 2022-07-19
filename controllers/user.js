@@ -20,9 +20,6 @@ export async function createUser(req, res) {
                 password,
                 email,
                 tag,
-            },
-            {
-                fields: ["username", "password", "email", "tag"],
             }
         );
         return res.json(newUser);
@@ -44,7 +41,6 @@ export async function updateUser(req, res) {
         user.tag = tag;
         user.email = email;
         await user.save();
-    
         res.json(user);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -55,24 +51,9 @@ export async function deleteUser(req, res) {
     const { id } = req.params;
 
     try {
-        await UserFriends.destroy({
-            where: {
-                [Op.or]: [
-                    { UserId: id },
-                    { FriendId: id }
-                ]
-            },
-        });
-        await UserServers.destroy({
-            where: {
-                UserId: id,
-            },
-        });
-        await User.destroy({
-            where: {
-                id,
-            },
-        });
+        const user = await User.findByPk(id);
+        user.active = false;
+        await user.save();
         return res.sendStatus(204);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -114,12 +95,9 @@ export async function joinServer(req, res) {
     try {
         let newUserServer = await UserServers.create(
             {
-                id,
-                serverId,
+                UserId: id,
+                ServerId: serverId,
                 joined: Date.now()
-            },
-            {
-                fields: ["UserId", "ServerId", "joined"],
             }
         );
         return res.json(newUserServer);
@@ -158,9 +136,6 @@ export async function addFriend(req, res) {
                 UserId: id,
                 FriendId: userId,
                 accepted: false
-            },
-            {
-                fields: ["UserId", "FriendId", "accepted"],
             }
         );
         return res.json(newFriend);
@@ -191,9 +166,16 @@ export async function acceptFriend(req, res) {
     const { userId } = req.body;
     
     try {
-        const friend = await User.findOne({ where: { UserId: id, FriendId: userId } });
+        const friend = await User.findOne({ where: { UserId: userId, FriendId: id } });
         friend.accepted = true;
         await friend.save();
+        await UserFriends.create(
+            {
+                UserId: id,
+                FriendId: userId,
+                accepted: true
+            }
+        );
         res.json(friend);
     } catch (error) {
         return res.status(500).json({ message: error.message });

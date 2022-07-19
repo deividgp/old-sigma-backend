@@ -1,22 +1,14 @@
 import { Router } from "express"
-import {
-    createServer,
-    updateServer,
-    deleteServer,
-    getServerChannels,
-    getServerUsers,
-    addUserServer,
-    deleteUserServer,
-} from "../controllers/server.js";
+import * as serverControllers from "../controllers/server.js";
 
 const router = Router()
 
-router.post("/", createServer);
-router.put("/:id", updateServer);
-router.delete("/:id", deleteServer);
-router.get("/:id", getServerChannels);
-router.get("/:id", getServerUsers);
-router.post("/:id", addUserServer);
-router.delete("/:id", deleteUserServer);
+router.post("/", serverControllers.createServer);
+router.put("/:id", serverControllers.updateServer);
+router.delete("/:id", serverControllers.deleteServer);
+router.get("/:id", serverControllers.getServerChannels);
+router.get("/:id", serverControllers.getServerUsers);
+router.post("/:id", serverControllers.addUserServer);
+router.delete("/:id", serverControllers.deleteUserServer);
 
 export default router;

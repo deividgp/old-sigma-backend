@@ -22,7 +22,8 @@ async function addUsers(){
 }
 
 async function addServers(){
-
+    await Server.create({ name: "Server1" })
+    await Server.create({ name: "Server2" })
 }
 
 async function addChannels(){

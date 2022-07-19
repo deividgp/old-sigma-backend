@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../database.js";
+import sequelize from "../database.js";
 import { Channel } from "./channel.js";
 
 export const Server = sequelize.define(

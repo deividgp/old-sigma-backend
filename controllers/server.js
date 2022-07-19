@@ -9,9 +9,6 @@ export async function createServer(req, res) {
         let newServer = await Server.create(
             {
                 name
-            },
-            {
-                fields: ["name"],
             }
         );
         return res.json(newServer);
@@ -93,12 +90,9 @@ export async function addUserServer(req, res) {
     try {
         let newUserServer = await UserServers.create(
             {
-                id,
-                userId,
+                ServerId: id,
+                UserId: userId,
                 joined: Date.now()
-            },
-            {
-                fields: ["ServerId", "UserId", "joined"],
             }
         );
         return res.json(newUserServer);

@@ -8,21 +8,27 @@ import serverRoutes from "./routes/server.js";
 import userRoutes from "./routes/user.js";
 import authRoutes from "./routes/authentication.js";
 import passport from "passport"
+import cookieParser from "cookie-parser"
 
 const app = express();
 
 // Middlewares
 app.use(morgan('combined'))
 app.use(helmet());
+// For parsing application/json
 app.use(express.json());
+// For parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }))
+app.use(cors({
+    origin: 'http://yourapp.com',
+    credentials: true
+}));
 app.use(session({
-    secret: 'keyboard cat',
+    secret: process.env.COOKIE_SECRET,
     resave: true,
     saveUninitialized: true
 }));
-app.use(cors({
-    origin: 'http://yourapp.com'
-}));
+app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(passport.initialize());
 app.use(passport.session());
 

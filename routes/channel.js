@@ -1,16 +1,11 @@
 import { Router } from "express"
-import {
-    createChannel,
-    updateChannel,
-    deleteChannel,
-    getChannelMessages,
-} from "../controllers/channel.js";
+import * as channelControllers from "../controllers/channel.js";
 
 const router = Router()
 
-router.post("/", createChannel);
-router.put("/:id", updateChannel);
-router.delete("/:id", deleteChannel);
-router.get("/:id", getChannelMessages);
+router.post("/", channelControllers.createChannel);
+router.put("/:id", channelControllers.updateChannel);
+router.delete("/:id", channelControllers.deleteChannel);
+router.get("/:id", channelControllers.getChannelMessages);
 
 export default router;

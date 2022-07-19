@@ -8,10 +8,8 @@ export async function createChannel(req, res) {
     try {
         let newChannel = await User.create(
             {
-                name, serverId
-            },
-            {
-                fields: ["name", "ServerId"],
+                name,
+                ServerId: serverId
             }
         );
         return res.json(newChannel);
