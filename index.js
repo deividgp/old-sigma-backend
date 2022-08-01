@@ -5,7 +5,7 @@ import addData from "./addData.js";
 import passport from "./passport.js"
 import app from "./app.js";
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.listen(port, async () => {
     try
