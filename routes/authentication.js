@@ -1,17 +1,21 @@
 import { Router } from "express"
-import passport from "passport"
+import passport from "../passport.js"
+import isAuthenticated from "../utils/isAuthenticated.js";
+import isNotAuthenticated from "../utils/isNotAuthenticated.js";
 const router = Router()
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.status(200).send({message: 'Logged In Successful'})
+router.post('/login', isNotAuthenticated, passport.authenticate('local'), (req, res) => {
+    res.status(200).send(req.user)
 });
 
-router.get('/logout', function (req, res) {
-	req.logout();
-    res.status(200).send({message: 'Log Out Successful'});
+router.get('/logout', isAuthenticated, function (req, res) {
+	req.logout(function(err) {
+        if (err) { return next(err); }
+            res.status(200).send({message: 'Log Out Successful'});
+    });
 });
 
-router.get("/user", (req, res) => {
+router.get("/user", isAuthenticated, (req, res) => {
     res.send(req.user);
 });
 

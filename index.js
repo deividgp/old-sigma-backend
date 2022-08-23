@@ -10,8 +10,8 @@ const port = process.env.PORT || 4000;
 app.listen(port, async () => {
     try
     {
-        await sequelize.sync({force: true});
-        await addData();
+        /*await sequelize.sync({force: true});
+        await addData();*/
         console.log('Connected to database')
     }
     catch(error)
