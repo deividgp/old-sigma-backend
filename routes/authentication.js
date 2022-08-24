@@ -15,7 +15,8 @@ router.get('/logout', isAuthenticated, function (req, res) {
     });
 });
 
-router.get("/user", isAuthenticated, (req, res) => {
+router.get("/user", (req, res) => {
+    console.log(req.user);
     res.send(req.user);
 });
 

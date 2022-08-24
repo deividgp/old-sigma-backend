@@ -22,10 +22,10 @@ app.use(helmet());
 app.use(express.json());
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }))
-app.use(cors({
+/*app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
-}));
+}));*/
 app.use(session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
