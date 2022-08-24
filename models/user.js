@@ -41,7 +41,8 @@ export const User = sequelize.define(
         allowNull: false,
         defaultValue: true
     },
-  }
+  },
+  { timestamps: false }
 );
 
 User.beforeCreate(async (user) => {

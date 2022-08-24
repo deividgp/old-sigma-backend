@@ -15,7 +15,8 @@ export const UserMessageUsers = sequelize.define(
         allowNull: false,
         defaultValue: false
     }
-  }
+  },
+  { timestamps: false }
 );
 
 User.belongsToMany(User, { as: "MessageUsers", through: UserMessageUsers });

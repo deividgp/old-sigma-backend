@@ -15,9 +15,8 @@ router.get('/logout', isAuthenticated, function (req, res) {
     });
 });
 
-router.get("/user", (req, res) => {
-    console.log(req.user);
-    res.send(req.user);
+router.get("/user", isAuthenticated, (req, res) => {
+    res.status(200).send(req.user);
 });
 
 export default router;

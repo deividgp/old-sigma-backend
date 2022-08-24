@@ -10,7 +10,8 @@ export const UserFriends = sequelize.define(
       allowNull: false,
       defaultValue: false
     }
-  }
+  },
+  { timestamps: false }
 );
 
 User.belongsToMany(User, { as: "Friends", through: UserFriends });

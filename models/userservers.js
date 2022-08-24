@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 import sequelize from "../database.js";
 import { User } from "./user.js";
 import { Server } from "./server.js";
@@ -10,7 +10,8 @@ export const UserServers = sequelize.define(
             type: DataTypes.DATE,
             allowNull: false
         }
-    }
+    },
+    { timestamps: false }
 );
 
 User.belongsToMany(Server, { through: UserServers });

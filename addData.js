@@ -7,41 +7,14 @@ import { UserChannelMessage } from "./models/userchannelmessage.js"
 import { Channel } from "./models/channel.js"
 
 export default async function addData(){
-    addUsers();
-    addServers();
-    addChannels();
-    addUserMessages();
-    addChannelMessages();
-    addUserFriends();
-    addUserServers();
-}
-
-async function addUsers(){
     await User.create({ username: "Deividgp", tag: 1234, password: "hi1234", email: "hi1234@gmail.com" })
+    .then(async (user) => {
+        await Server.create({ name: "Server1" }).then(async (server) => {
+            await UserServers.create({ UserId: user.id, ServerId: server.id, joined: Date.now() });
+        })
+        await Server.create({ name: "Server2" }).then(async (server) => {
+            await UserServers.create({ UserId: user.id, ServerId: server.id, joined: Date.now() });
+        })
+    })
     await User.create({ username: "David", tag: 1234, password: "hi1234", email: "hi1234@gmail.com" })
-}
-
-async function addServers(){
-    await Server.create({ name: "Server1" })
-    await Server.create({ name: "Server2" })
-}
-
-async function addChannels(){
-
-}
-
-async function addUserMessages(){
-    
-}
-
-async function addChannelMessages(){
-
-}
-
-async function addUserFriends(){
-
-}
-
-async function addUserServers(){
-
 }

@@ -7,6 +7,7 @@ import channelRoutes from "./routes/channel.js";
 import serverRoutes from "./routes/server.js";
 import userRoutes from "./routes/user.js";
 import authRoutes from "./routes/authentication.js";
+import loggedUserRoutes from "./routes/loggedUser.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import isNotAuthenticated from "./utils/isNotAuthenticated.js";
@@ -33,6 +34,7 @@ app.use(passport.session());
 
 // Routes
 app.use(authRoutes);
+app.use("/loggeduser", loggedUserRoutes);
 app.use("/channels", channelRoutes);
 app.use("/servers", serverRoutes);
 app.use("/users", userRoutes);

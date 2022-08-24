@@ -16,7 +16,8 @@ export const UserChannelMessage = sequelize.define(
         allowNull: false,
         defaultValue: false
     }
-  }
+  },
+  { timestamps: false }
 );
 
 User.belongsToMany(Channel, { through: UserChannelMessage });
