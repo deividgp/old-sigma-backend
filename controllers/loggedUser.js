@@ -7,19 +7,143 @@ import { Server } from "../models/server.js"
 
 export async function getFriends(req, res) {
     try {
-        const friends = await UserFriends.findAll({
-            attributes: ["FriendId"],
-            where: { UserId: req.user.id },
+        await User.findOne({
+            where: {
+                id: req.user.id
+            },
+            include: {
+                model: User,
+                as: "Friends",
+                through: {
+                    where: {
+                      accepted: true
+                    }
+                }
+            }
+        })
+        .then((user) => {
+            res.json(user.Friends);
         });
-        res.json(friends);
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }
 }
 
+export async function getPendingFriends(req, res) {
+    try {
+        await User.findOne({
+            where: {
+                id: req.user.id
+            },
+            include: {
+                model: User,
+                as: "Friends",
+                through: {
+                    where: {
+                      accepted: false
+                    }
+                }
+            }
+        })
+        .then((user) => {
+            res.json(user.Friends);
+        });
+    } catch (e) {
+        return res.status(500).json({ message: e.message });
+    }
+}
+
+export async function addFriend(req, res) {
+    const { userId } = req.body;
+
+    try {
+        await UserFriends.create(
+            {
+                UserId: req.user.id,
+                FriendId: userId,
+                accepted: false
+            }
+        )
+        .then((friend) => {
+            res.json(friend);
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function ignoreFriend(req, res) {
+    const { userId } = req.body;
+
+    try {
+        await UserFriends.destroy({
+            where: {
+                UserId: userId,
+                FriendId: req.user.id,
+                accepted: false
+            },
+        })
+        .then(() => {
+            res.sendStatus(204);
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function deleteFriend(req, res) {
+    const { userId } = req.body;
+
+    try {
+        await UserFriends.destroy({
+            where: {
+                UserId: req.user.id,
+                FriendId: userId
+            },
+        })
+        .then(async () => {
+            await UserFriends.destroy({
+                where: {
+                    FriendId: req.user.id,
+                    UserId: userId
+                },
+            })
+            .then(() => {
+                res.sendStatus(204);
+            });
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function acceptFriend(req, res) {
+    const { userId } = req.body;
+    
+    try {
+        await User.findOne({ where: { UserId: userId, FriendId: id } })
+        .then(async (friend) => {
+            friend.accepted = true;
+            await friend.save();
+            await UserFriends.create(
+                {
+                    UserId: req.user.id,
+                    FriendId: userId,
+                    accepted: true
+                }
+            )
+            .then(() => {
+                res.json(friend);
+            });
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
 export async function getServers(req, res) {
     try {
-        await User.findAll({
+        await User.findOne({
             where: { id: req.user.id },
             include: {
                 model: Server,
@@ -28,9 +152,8 @@ export async function getServers(req, res) {
                 }
             }
         })
-        .then((result) => {
-            console.log(result[0].Servers);
-            res.json(result[0].Servers);
+        .then((user) => {
+            res.json(user.Servers);
         });
         
     } catch (e) {
@@ -42,14 +165,15 @@ export async function joinServer(req, res) {
     const { serverId } = req.body;
 
     try {
-        let newUserServer = await UserServers.create(
+        await UserServers.create(
             {
                 UserId: req.user.id,
                 ServerId: serverId,
                 joined: Date.now()
             }
-        );
-        return res.json(newUserServer);
+        ).then((user) => {
+            res.json(user);
+        });
     } catch (error) {
         res.status(500).json({
             message: error.message,
@@ -67,61 +191,10 @@ export async function leaveServer(req, res) {
                 ServerId: serverId,
                 UserId: req.user.id
             },
+        })
+        .then(() => {
+            res.sendStatus(204);
         });
-        return res.sendStatus(204);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
-
-export async function addFriend(req, res) {
-    const { userId } = req.body;
-
-    try {
-        let newFriend = await UserFriends.create(
-            {
-                UserId: req.user.id,
-                FriendId: userId,
-                accepted: false
-            }
-        );
-        return res.json(newFriend);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
-
-export async function deleteFriend(req, res) {
-    const { userId } = req.body;
-
-    try {
-        await UserServers.destroy({
-            where: {
-                UserId: req.user.id,
-                FriendId: userId
-            },
-        });
-        return res.sendStatus(204);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
-
-export async function acceptFriend(req, res) {
-    const { userId } = req.body;
-    
-    try {
-        const friend = await User.findOne({ where: { UserId: userId, FriendId: id } });
-        friend.accepted = true;
-        await friend.save();
-        await UserFriends.create(
-            {
-                UserId: req.user.id,
-                FriendId: userId,
-                accepted: true
-            }
-        );
-        res.json(friend);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

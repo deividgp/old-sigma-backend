@@ -5,11 +5,13 @@ import isAuthenticated from "../utils/isAuthenticated.js";
 const router = Router()
 
 router.get("/friends", isAuthenticated, loggedUserControllers.getFriends);
+router.get("/pendingfriends", isAuthenticated, loggedUserControllers.getPendingFriends);
 router.get("/servers", isAuthenticated, loggedUserControllers.getServers);
 router.post("/joinserver", isAuthenticated, loggedUserControllers.joinServer);
 router.delete("/leaveserver", isAuthenticated, loggedUserControllers.leaveServer);
 router.post("/addfriend", isAuthenticated, loggedUserControllers.addFriend);
 router.put("/acceptfriend", isAuthenticated, loggedUserControllers.acceptFriend);
 router.delete("/addfriend", isAuthenticated, loggedUserControllers.deleteFriend);
+router.delete("/ignorefriend", isAuthenticated, loggedUserControllers.ignoreFriend);
 
 export default router;
