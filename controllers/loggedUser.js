@@ -19,33 +19,20 @@ export async function getFriends(req, res) {
 
 export async function getServers(req, res) {
     try {
-        /*await UserServers.findAll({
-            where: { UserId: req.user.id },
-        })
-        .then((servers) => {
-            servers.forEach(async (server) => {
-                console.log(server);
-                await Channel.findAll({
-                    attributes: ["id", "name"],
-                    where: { ServerId: server.ServerId }
-                }).then((channels) => {
-                    servers.channels = channels;
-                })
-            });
-            res.json(servers);
-            /*await Channel.findAll({
-                attributes: ["name"],
-                where: { ServerId: req.user.id },
-            })
-        })*/
         await User.findAll({
-            include: Server,
-            where: { id: req.user.id }
+            where: { id: req.user.id },
+            include: {
+                model: Server,
+                include: {
+                  model: Channel
+                }
+            }
         })
         .then((result) => {
-            console.log(result);
-            res.json("hola");
+            console.log(result[0].Servers);
+            res.json(result[0].Servers);
         });
+        
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }
