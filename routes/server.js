@@ -7,7 +7,7 @@ router.post("/", serverControllers.createServer);
 router.put("/:id", serverControllers.updateServer);
 router.delete("/:id", serverControllers.deleteServer);
 router.get("/:id", serverControllers.getServerChannels);
-router.get("/:id", serverControllers.getServerUsers);
+router.get("/:id/users", serverControllers.getServerUsers);
 router.post("/:id", serverControllers.addUserServer);
 router.delete("/:id", serverControllers.deleteUserServer);
 

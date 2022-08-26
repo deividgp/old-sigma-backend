@@ -1,6 +1,7 @@
 import { UserServers } from "../models/userservers.js"
 import { Server } from "../models/server.js"
 import { Channel } from "../models/channel.js"
+import { User } from "../models/user.js"
 
 export async function createServer(req, res) {
     const { name } = req.body;
@@ -73,11 +74,16 @@ export async function getServerUsers(req, res) {
     const { id } = req.params;
 
     try {
-        const users = await UserServers.findAll({
-        attributes: ["UserId"],
-            where: { ServerId: id },
+        await Server.findOne({
+            where: { id: id },
+            include: {
+                model: User
+            }
+        })
+        .then((server) => {
+            console.log(server);
+            res.json(server.Users);
         });
-        res.json(users);
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }

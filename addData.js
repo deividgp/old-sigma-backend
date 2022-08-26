@@ -17,8 +17,16 @@ export default async function addData(){
 
             await User.create({ username: "David", tag: 1234, password: "hi1234", email: "hi1234@gmail.com" })
             .then(async (user2) => {
-                await UserFriends.create({ accepted: true, UserId: user1.id, FriendId: user2.id });
-                await UserFriends.create({ accepted: true, UserId: user2.id, FriendId: user1.id });
+
+                await User.create({ username: "Oriol", tag: 1234, password: "hi1234", email: "hi1234@gmail.com" })
+                .then(async (user3) => {
+                    await UserFriends.create({ accepted: true, UserId: user1.id, FriendId: user3.id });
+                    await UserFriends.create({ accepted: true, UserId: user3.id, FriendId: user1.id });
+                    await UserServers.create({ UserId: user2.id, ServerId: server.id, joined: Date.now() });
+                    await UserServers.create({ UserId: user3.id, ServerId: server.id, joined: Date.now() });
+                })
+                await UserFriends.create({ accepted: false, UserId: user1.id, FriendId: user2.id });
+                //await UserFriends.create({ accepted: false, UserId: user2.id, FriendId: user1.id });
             })
         })
         await Server.create({ name: "Server2", description: "This is server number 2" }).then(async (server) => {

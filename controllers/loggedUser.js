@@ -59,8 +59,8 @@ export async function addFriend(req, res) {
     try {
         await UserFriends.create(
             {
-                UserId: req.user.id,
-                FriendId: userId,
+                UserId: userId,
+                FriendId: req.user.id,
                 accepted: false
             }
         )
@@ -78,8 +78,8 @@ export async function ignoreFriend(req, res) {
     try {
         await UserFriends.destroy({
             where: {
-                UserId: userId,
-                FriendId: req.user.id,
+                UserId: req.user.id,
+                FriendId: userId,
                 accepted: false
             },
         })
@@ -121,14 +121,14 @@ export async function acceptFriend(req, res) {
     const { userId } = req.body;
     
     try {
-        await User.findOne({ where: { UserId: userId, FriendId: id } })
+        await User.findOne({ where: { UserId: req.user.id, FriendId: userId } })
         .then(async (friend) => {
             friend.accepted = true;
             await friend.save();
             await UserFriends.create(
                 {
-                    UserId: req.user.id,
-                    FriendId: userId,
+                    UserId: userId,
+                    FriendId: req.user.id,
                     accepted: true
                 }
             )
@@ -155,7 +155,6 @@ export async function getServers(req, res) {
         .then((user) => {
             res.json(user.Servers);
         });
-        
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }

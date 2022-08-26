@@ -59,8 +59,8 @@ User.prototype.validPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 }
 
-User.hasMany(Server, {
-    foreignkey: "ownerId",
-    sourceKey: "id",
+Server.belongsTo(User, {
+    foreignKey: "ownerId",
+    as: "owner"
 });
-Server.belongsTo(User, { foreignkey: "ownerId", targetId: "id" });
+User.hasMany(Server, { as: "ownedServers", foreignKey: "ownerId" });

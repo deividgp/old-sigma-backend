@@ -22,8 +22,5 @@ export const Server = sequelize.define(
   { timestamps: false }
 );
 
-Server.hasMany(Channel, {
-  foreignkey: "serverId",
-  sourceKey: "id",
-});
-Channel.belongsTo(Server, { foreignkey: "serverId", targetId: "id" });
+Server.hasMany(Channel);
+Channel.belongsTo(Server);
