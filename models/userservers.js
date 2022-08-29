@@ -8,7 +8,8 @@ export const UserServers = sequelize.define(
     {
         joined: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: false,
+            defaultValue: sequelize.fn('now')
         }
     },
     { timestamps: false }

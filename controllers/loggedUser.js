@@ -13,6 +13,7 @@ export async function getFriends(req, res) {
             },
             include: {
                 model: User,
+                attributes: ["id","username"],
                 as: "Friends",
                 through: {
                     where: {
@@ -37,6 +38,7 @@ export async function getPendingFriends(req, res) {
             },
             include: {
                 model: User,
+                attributes: ["id","username"],
                 as: "Friends",
                 through: {
                     where: {
@@ -76,7 +78,6 @@ export async function addFriend(req, res) {
                 res.json(friend);
             })
             .catch((error) => {
-                console.log(error);
                 return res.status(500);
             });
         });

@@ -6,6 +6,6 @@ const router = Router()
 router.post("/", channelControllers.createChannel);
 router.put("/:id", channelControllers.updateChannel);
 router.delete("/:id", channelControllers.deleteChannel);
-router.get("/:id", channelControllers.getChannelMessages);
+router.get("/:id/messages", channelControllers.getChannelMessages);
 
 export default router;

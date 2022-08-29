@@ -4,42 +4,42 @@ import { Server } from "./server.js";
 import bcrypt from "bcryptjs";
 
 export const User = sequelize.define(
-  "User",
-  {
-    id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+    "User",
+    {
+        id: {
+            type: DataTypes.UUID,
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        role: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: "User"
+        },
+        profilePicture: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        active: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
+        },
     },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    role: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "User"
-    },
-    profilePicture: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
-    },
-  },
-  { timestamps: false }
+    { timestamps: false }
 );
 
 User.beforeCreate(async (user) => {

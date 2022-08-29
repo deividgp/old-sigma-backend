@@ -77,7 +77,8 @@ export async function getServerUsers(req, res) {
         await Server.findOne({
             where: { id: id },
             include: {
-                model: User
+                model: User,
+                attributes: ["id","username"]
             }
         })
         .then((server) => {

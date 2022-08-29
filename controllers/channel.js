@@ -1,5 +1,6 @@
 import { UserChannelMessage } from "../models/userchannelmessage.js"
 import { Channel } from "../models/channel.js"
+import { User } from "../models/user.js"
 import uuid from "uuid4"
 
 export async function createChannel(req, res) {
@@ -64,11 +65,19 @@ export async function getChannelMessages(req, res){
     const { id } = req.params;
 
     try {
-        const messages = await UserChannelMessage.findAll({
-            attributes: ["id", "content", "UserId"],
-            where: { ChannelId: id },
+        await Channel.findOne({
+            where: { id: id },
+            include: {
+                model: UserChannelMessage,
+                include: {
+                    model: User,
+                    attributes: ["id","username"]
+                }
+            }
+        })
+        .then((channel) => {
+            res.json(channel.UserChannelMessages);
         });
-        res.json(messages);
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }
