@@ -81,7 +81,6 @@ export async function getServerUsers(req, res) {
             }
         })
         .then((server) => {
-            console.log(server);
             res.json(server.Users);
         });
     } catch (e) {

@@ -5,21 +5,19 @@ import { UserMessageUsers } from "../models/usermessageusers.js"
 
 export async function createUser(req, res) {
     const { username, password, email } = req.body;
-    let tag;
     let auxUser;
 
-    do {
-        tag = Math.floor(Math.random() * max);
-        auxUser = await User.findOne({ where: { username: username, tag: tag } });
-    } while (auxUser != null);
+    auxUser = await User.findOne({ where: { username: username } });
+    if(auxUser != null){
+        return res.status(500);
+    }
 
     try {
         let newUser = await User.create(
             {
                 username,
                 password,
-                email,
-                tag,
+                email
             }
         );
         return res.json(newUser);
@@ -33,12 +31,11 @@ export async function createUser(req, res) {
 
 export async function updateUser(req, res) {
     const { id } = req.params;
-    const { username, tag, email } = req.body;
+    const { username, email } = req.body;
 
     try {
         const user = await User.findByPk(id);
         user.username = username;
-        user.tag = tag;
         user.email = email;
         await user.save();
         res.json(user);

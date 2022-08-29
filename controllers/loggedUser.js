@@ -54,18 +54,58 @@ export async function getPendingFriends(req, res) {
 }
 
 export async function addFriend(req, res) {
+    const { username } = req.body;
+
+    try {
+        User.findOne({
+            where: {
+                username: username
+            },
+            attributes: ['id']
+        })
+        .then(async (user) => {
+
+            await UserFriends.create(
+                {
+                    UserId: user.id,
+                    FriendId: req.user.id,
+                    accepted: false
+                }
+            )
+            .then((friend) => {
+                res.json(friend);
+            })
+            .catch((error) => {
+                console.log(error);
+                return res.status(500);
+            });
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function acceptFriend(req, res) {
     const { userId } = req.body;
 
     try {
-        await UserFriends.create(
-            {
-                UserId: userId,
-                FriendId: req.user.id,
-                accepted: false
-            }
-        )
-        .then((friend) => {
-            res.json(friend);
+        await UserFriends.findOne({ where: { UserId: req.user.id, FriendId: userId } })
+        .then(async (friend) => {
+            friend.accepted = true;
+            await friend.save();
+            await UserFriends.create(
+                {
+                    UserId: userId,
+                    FriendId: req.user.id,
+                    accepted: true
+                }
+            )
+            .then(async () => {
+                await User.findByPk(userId)
+                .then((user) => {
+                    res.json(user);
+                });
+            });
         });
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -73,14 +113,13 @@ export async function addFriend(req, res) {
 }
 
 export async function ignoreFriend(req, res) {
-    const { userId } = req.body;
+    const { id } = req.params;
 
     try {
         await UserFriends.destroy({
             where: {
                 UserId: req.user.id,
-                FriendId: userId,
-                accepted: false
+                FriendId: id
             },
         })
         .then(() => {
@@ -92,48 +131,24 @@ export async function ignoreFriend(req, res) {
 }
 
 export async function deleteFriend(req, res) {
-    const { userId } = req.body;
+    const { id } = req.params;
 
     try {
         await UserFriends.destroy({
             where: {
                 UserId: req.user.id,
-                FriendId: userId
+                FriendId: id
             },
         })
         .then(async () => {
             await UserFriends.destroy({
                 where: {
                     FriendId: req.user.id,
-                    UserId: userId
+                    UserId: id
                 },
             })
             .then(() => {
                 res.sendStatus(204);
-            });
-        });
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
-
-export async function acceptFriend(req, res) {
-    const { userId } = req.body;
-    
-    try {
-        await User.findOne({ where: { UserId: req.user.id, FriendId: userId } })
-        .then(async (friend) => {
-            friend.accepted = true;
-            await friend.save();
-            await UserFriends.create(
-                {
-                    UserId: userId,
-                    FriendId: req.user.id,
-                    accepted: true
-                }
-            )
-            .then(() => {
-                res.json(friend);
             });
         });
     } catch (error) {
