@@ -2,8 +2,8 @@ import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
 import { User } from "./user.js";
 
-export const UserMessageUsers = sequelize.define(
-  "UserMessageUsers",
+export const UserUserMessage = sequelize.define(
+  "UserUserMessage",
   {
     id: {
       type: DataTypes.UUID,
@@ -15,7 +15,7 @@ export const UserMessageUsers = sequelize.define(
       allowNull: false,
       defaultValue: false
     },
-    joined: {
+    created: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: sequelize.fn('now')
@@ -24,4 +24,11 @@ export const UserMessageUsers = sequelize.define(
   { timestamps: false }
 );
 
-User.belongsToMany(User, { as: "MessageUsers", through: { model: UserMessageUsers }});
+//User.belongsToMany(User, { as: "MessageUsers", through: { model: UserUserMessage }});
+User.hasMany(UserUserMessage);
+UserUserMessage.belongsTo(User, {
+  as: "MessageUser"
+});
+
+User.hasMany(UserUserMessage);
+UserUserMessage.belongsTo(User);

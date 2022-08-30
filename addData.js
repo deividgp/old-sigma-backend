@@ -1,7 +1,7 @@
 import { User } from "./models/user.js"
 import { Server } from "./models/server.js"
 import { UserFriends } from "./models/userfriends.js"
-import { UserMessageUsers } from "./models/usermessageusers.js"
+import { UserUserMessage } from "./models/UserUserMessage.js"
 import { UserServers } from "./models/userservers.js"
 import { UserChannelMessage } from "./models/userchannelmessage.js"
 import { Channel } from "./models/channel.js"
@@ -32,6 +32,12 @@ export default async function addData(){
                         await UserChannelMessage.create({ content: "hahahaha4", UserId: user3.id, ChannelId: channel.id });
                         await UserChannelMessage.create({ content: "hahahaha5", UserId: user2.id, ChannelId: channel.id });
                     });
+                    await UserUserMessage.create({ content: "hihihi2", UserId: user1.id, MessageUserId: user3.id });
+                    await UserUserMessage.create({ content: "hihihi3", UserId: user3.id, MessageUserId: user1.id });
+                    await UserUserMessage.create({ content: "hihihi4", UserId: user1.id, MessageUserId: user3.id });
+                    await UserUserMessage.create({ content: "hihihi5", UserId: user3.id, MessageUserId: user1.id });
+                    await UserUserMessage.create({ content: "hihihi6", UserId: user1.id, MessageUserId: user3.id });
+                    await UserUserMessage.create({ content: "hihihi7", UserId: user3.id, MessageUserId: user1.id });
                 })
                 await UserFriends.create({ accepted: false, UserId: user1.id, FriendId: user2.id });
                 //await UserFriends.create({ accepted: false, UserId: user2.id, FriendId: user1.id });

@@ -2,7 +2,7 @@ import { User } from "../models/user.js"
 import { Channel } from "../models/channel.js"
 import { UserServers } from "../models/userservers.js"
 import { UserFriends } from "../models/userfriends.js"
-import { UserMessageUsers } from "../models/usermessageusers.js"
+import { UserUserMessage } from "../models/UserUserMessage.js"
 import { Server } from "../models/server.js"
 
 export async function getFriends(req, res) {
@@ -209,6 +209,27 @@ export async function leaveServer(req, res) {
         })
         .then(() => {
             res.sendStatus(204);
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function getUserMessages(req, res) {
+    const { id } = req.params;
+
+    try {
+        await User.findOne({
+            include: {
+                model: UserUserMessage,
+                include: {
+                    model: User
+                }
+            }
+        })
+        .then((user) => {
+            console.log(user);
+            res.json(user);
         });
     } catch (error) {
         return res.status(500).json({ message: error.message });

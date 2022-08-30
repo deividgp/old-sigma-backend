@@ -6,6 +6,7 @@ import passport from "./passport.js"
 import app from "./app.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { UserChannelMessage } from "./models/userchannelmessage.js";
 
 const port = process.env.PORT || 4000;
 const server = createServer(app);
@@ -22,8 +23,10 @@ async function main(){
             socket.join(data);
         });
         
-        socket.on("send_message", (data) => {
-            socket.to(data.room).emit("receive_message", data);
+        socket.on("send_server_message", async (data) => {
+            socket.to(data.room).emit("receive_server_message", data);
+            console.log(data.userMessage);
+            await UserChannelMessage.create({ id: data.userMessage.id, content: data.userMessage.content, UserId: data.userMessage.UserId, ChannelId: data.userMessage.ChannelId });
         });
 
         socket.on("disconnect", () => {
