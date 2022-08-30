@@ -30,7 +30,7 @@ export async function updateChannel(req, res) {
         const channel = await Channel.findByPk(id);
         channel.name = name;
         await channel.save();
-    
+
         res.json(channel);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -61,7 +61,7 @@ export async function deleteChannel(req, res) {
     }
 }
 
-export async function getChannelMessages(req, res){
+export async function getChannelMessages(req, res) {
     const { id } = req.params;
 
     try {
@@ -71,13 +71,13 @@ export async function getChannelMessages(req, res){
                 model: UserChannelMessage,
                 include: {
                     model: User,
-                    attributes: ["id","username"]
+                    attributes: ["id", "username"]
                 }
             }
         })
-        .then((channel) => {
-            res.json(channel.UserChannelMessages);
-        });
+            .then((channel) => {
+                res.json(channel.UserChannelMessages);
+            });
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }

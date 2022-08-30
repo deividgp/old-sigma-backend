@@ -9,9 +9,9 @@ router.post('/login', isNotAuthenticated, passport.authenticate('local'), (req, 
 });
 
 router.get('/logout', isAuthenticated, function (req, res) {
-	req.logout(function(err) {
+    req.logout(function (err) {
         if (err) { return next(err); }
-            res.status(200).send({message: 'Log Out Successful'});
+        res.status(200).send({ message: 'Log Out Successful' });
     });
 });
 

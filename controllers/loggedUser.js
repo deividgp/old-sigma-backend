@@ -2,8 +2,9 @@ import { User } from "../models/user.js"
 import { Channel } from "../models/channel.js"
 import { UserServers } from "../models/userservers.js"
 import { UserFriends } from "../models/userfriends.js"
-import { UserUserMessage } from "../models/UserUserMessage.js"
+import { UserUserMessages } from "../models/userusermessages.js"
 import { Server } from "../models/server.js"
+import { Op } from "sequelize"
 
 export async function getFriends(req, res) {
     try {
@@ -13,18 +14,18 @@ export async function getFriends(req, res) {
             },
             include: {
                 model: User,
-                attributes: ["id","username"],
+                attributes: ["id", "username"],
                 as: "Friends",
                 through: {
                     where: {
-                      accepted: true
+                        accepted: true
                     }
                 }
             }
         })
-        .then((user) => {
-            res.json(user.Friends);
-        });
+            .then((user) => {
+                res.json(user.Friends);
+            });
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }
@@ -38,18 +39,18 @@ export async function getPendingFriends(req, res) {
             },
             include: {
                 model: User,
-                attributes: ["id","username"],
+                attributes: ["id", "username"],
                 as: "Friends",
                 through: {
                     where: {
-                      accepted: false
+                        accepted: false
                     }
                 }
             }
         })
-        .then((user) => {
-            res.json(user.Friends);
-        });
+            .then((user) => {
+                res.json(user.Friends);
+            });
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }
@@ -65,22 +66,22 @@ export async function addFriend(req, res) {
             },
             attributes: ['id']
         })
-        .then(async (user) => {
+            .then(async (user) => {
 
-            await UserFriends.create(
-                {
-                    UserId: user.id,
-                    FriendId: req.user.id,
-                    accepted: false
-                }
-            )
-            .then((friend) => {
-                res.json(friend);
-            })
-            .catch((error) => {
-                return res.status(500);
+                await UserFriends.create(
+                    {
+                        UserId: user.id,
+                        FriendId: req.user.id,
+                        accepted: false
+                    }
+                )
+                    .then((friend) => {
+                        res.json(friend);
+                    })
+                    .catch((error) => {
+                        return res.status(500);
+                    });
             });
-        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -91,23 +92,23 @@ export async function acceptFriend(req, res) {
 
     try {
         await UserFriends.findOne({ where: { UserId: req.user.id, FriendId: userId } })
-        .then(async (friend) => {
-            friend.accepted = true;
-            await friend.save();
-            await UserFriends.create(
-                {
-                    UserId: userId,
-                    FriendId: req.user.id,
-                    accepted: true
-                }
-            )
-            .then(async () => {
-                await User.findByPk(userId)
-                .then((user) => {
-                    res.json(user);
-                });
+            .then(async (friend) => {
+                friend.accepted = true;
+                await friend.save();
+                await UserFriends.create(
+                    {
+                        UserId: userId,
+                        FriendId: req.user.id,
+                        accepted: true
+                    }
+                )
+                    .then(async () => {
+                        await User.findByPk(userId)
+                            .then((user) => {
+                                res.json(user);
+                            });
+                    });
             });
-        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -123,9 +124,9 @@ export async function ignoreFriend(req, res) {
                 FriendId: id
             },
         })
-        .then(() => {
-            res.sendStatus(204);
-        });
+            .then(() => {
+                res.sendStatus(204);
+            });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -141,17 +142,17 @@ export async function deleteFriend(req, res) {
                 FriendId: id
             },
         })
-        .then(async () => {
-            await UserFriends.destroy({
-                where: {
-                    FriendId: req.user.id,
-                    UserId: id
-                },
-            })
-            .then(() => {
-                res.sendStatus(204);
+            .then(async () => {
+                await UserFriends.destroy({
+                    where: {
+                        FriendId: req.user.id,
+                        UserId: id
+                    },
+                })
+                    .then(() => {
+                        res.sendStatus(204);
+                    });
             });
-        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -164,13 +165,13 @@ export async function getServers(req, res) {
             include: {
                 model: Server,
                 include: {
-                  model: Channel
+                    model: Channel
                 }
             }
         })
-        .then((user) => {
-            res.json(user.Servers);
-        });
+            .then((user) => {
+                res.json(user.Servers);
+            });
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }
@@ -207,9 +208,9 @@ export async function leaveServer(req, res) {
                 UserId: req.user.id
             },
         })
-        .then(() => {
-            res.sendStatus(204);
-        });
+            .then(() => {
+                res.sendStatus(204);
+            });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -217,20 +218,29 @@ export async function leaveServer(req, res) {
 
 export async function getUserMessages(req, res) {
     const { id } = req.params;
-
+    
     try {
-        await User.findOne({
+        await UserUserMessages.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        UserId: req.user.id,
+                        MessageUserId: id
+                    },
+                    {
+                        UserId: id,
+                        MessageUserId: req.user.id
+                    }
+                ]
+            },
             include: {
-                model: UserUserMessage,
-                include: {
-                    model: User
-                }
+                model: User,
+                attributes: ["id", "username"]
             }
         })
-        .then((user) => {
-            console.log(user);
-            res.json(user);
-        });
+            .then((messages) => {
+                res.json(messages);
+            });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

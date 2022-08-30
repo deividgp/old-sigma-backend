@@ -29,7 +29,7 @@ export async function updateServer(req, res) {
         const server = await Server.findByPk(id);
         server.name = name;
         await server.save();
-    
+
         res.json(server);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -56,7 +56,7 @@ export async function deleteServer(req, res) {
     }
 }
 
-export async function getServerChannels(req, res){
+export async function getServerChannels(req, res) {
     const { id } = req.params;
 
     try {
@@ -78,12 +78,12 @@ export async function getServerUsers(req, res) {
             where: { id: id },
             include: {
                 model: User,
-                attributes: ["id","username"]
+                attributes: ["id", "username"]
             }
         })
-        .then((server) => {
-            res.json(server.Users);
-        });
+            .then((server) => {
+                res.json(server.Users);
+            });
     } catch (e) {
         return res.status(500).json({ message: e.message });
     }

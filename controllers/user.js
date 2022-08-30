@@ -1,14 +1,14 @@
 import { User } from "../models/user.js"
 import { UserServers } from "../models/userservers.js"
 import { UserFriends } from "../models/userfriends.js"
-import { UserUserMessage } from "../models/UserUserMessage.js"
+import { UserUserMessages } from "../models/userusermessages.js"
 
 export async function createUser(req, res) {
     const { username, password, email } = req.body;
     let auxUser;
 
     auxUser = await User.findOne({ where: { username: username } });
-    if(auxUser != null){
+    if (auxUser != null) {
         return res.status(500);
     }
 
@@ -161,7 +161,7 @@ export async function deleteFriend(req, res) {
 export async function acceptFriend(req, res) {
     const { id } = req.params;
     const { userId } = req.body;
-    
+
     try {
         const friend = await User.findOne({ where: { UserId: userId, FriendId: id } });
         friend.accepted = true;

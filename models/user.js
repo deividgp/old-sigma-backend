@@ -57,7 +57,12 @@ User.prototype.validPassword = function (password) {
 }
 
 Server.belongsTo(User, {
-    foreignKey: "ownerId",
-    as: "owner"
+    foreignKey: "OwnerId",
+    as: "owner",
+    allowNull: false
 });
-User.hasMany(Server, { as: "ownedServers", foreignKey: "ownerId" });
+User.hasMany(Server, {
+    as: "ownedServers",
+    foreignKey: "OwnerId",
+    allowNull: false
+});
