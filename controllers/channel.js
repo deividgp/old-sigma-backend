@@ -7,19 +7,21 @@ export async function createChannel(req, res) {
     const { name, serverId } = req.body;
 
     try {
-        let newChannel = await User.create(
+        await Channel.create(
             {
                 name,
                 ServerId: serverId
             }
-        );
-        return res.json(newChannel);
+        )
+            .then((channel) => {
+                return res.json(channel);
+            });
+
     } catch (error) {
         res.status(500).json({
             message: error.message,
         });
     }
-    res.json("received");
 }
 
 export async function updateChannel(req, res) {
@@ -41,7 +43,7 @@ export async function deleteChannel(req, res) {
     const { id } = req.params;
 
     try {
-        const messages = await UserChannelMessage.findAll({
+        /*const messages = await UserChannelMessage.findAll({
             where: {
                 ChannelId: id,
             },
@@ -49,13 +51,15 @@ export async function deleteChannel(req, res) {
         messages.forEach(async (message) => {
             message.UserId = uuid.empty();
             await message.save();
-        });
+        });*/
         await Channel.destroy({
             where: {
-                id,
+                id
             },
-        });
-        return res.sendStatus(204);
+        })
+            .then(() => {
+                res.sendStatus(204);
+            });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

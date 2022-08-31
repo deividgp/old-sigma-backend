@@ -42,15 +42,31 @@ export async function deleteServer(req, res) {
     try {
         await Channel.destroy({
             where: {
-                serverId: id,
+                ServerId: id,
             },
-        });
-        await Server.destroy({
-            where: {
-                id,
-            },
-        });
-        return res.sendStatus(204);
+        })
+            .then(async () => {
+                await Server.destroy({
+                    where: {
+                        id,
+                    },
+                })
+                    .then(async () => {
+                        await UserServers.destroy({
+                            where: {
+                                ServerId: id,
+                            },
+                        });
+                        return res.sendStatus(204);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

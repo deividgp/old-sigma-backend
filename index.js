@@ -51,6 +51,14 @@ async function main() {
             socket.join(data);
         });
 
+        socket.on("leave_room", (data) => {
+            socket.leave(data);
+        });
+
+        socket.on("action", (data) => {
+            socket.to(data.room).emit(data.action, data);
+        });
+
         socket.on("send_server_message", async (data) => {
             socket.to(data.room).emit("receive_server_message", data);
             await UserChannelMessage.create({ id: data.userMessage.id, content: data.userMessage.content, UserId: data.userMessage.UserId, ChannelId: data.userMessage.ChannelId });
