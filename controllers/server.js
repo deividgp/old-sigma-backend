@@ -4,141 +4,133 @@ import { Channel } from "../models/channel.js"
 import { User } from "../models/user.js"
 
 export async function createServer(req, res) {
-    const { name } = req.body;
+    const { name, description, OwnerId } = req.body;
 
-    try {
-        let newServer = await Server.create(
-            {
-                name
-            }
-        );
-        return res.json(newServer);
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
+    await Server.create(
+        {
+            name,
+            description,
+            OwnerId
+        }
+    )
+        .then((server) => {
+            return res.json(server);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-    }
-    res.json("received");
 }
 
 export async function updateServer(req, res) {
     const { id } = req.params;
     const { name } = req.body;
 
-    try {
-        const server = await Server.findByPk(id);
-        server.name = name;
-        await server.save();
-
-        res.json(server);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
+    await Server.findByPk(id)
+        .then(async (server) => {
+            server.name = name;
+            await server.save();
+            return res.json(server);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
+        });
 }
 
 export async function deleteServer(req, res) {
     const { id } = req.params;
 
-    try {
-        await Channel.destroy({
-            where: {
-                ServerId: id,
-            },
-        })
-            .then(async () => {
-                await Server.destroy({
-                    where: {
-                        id,
-                    },
-                })
-                    .then(async () => {
-                        await UserServers.destroy({
-                            where: {
-                                ServerId: id,
-                            },
-                        });
-                        return res.sendStatus(204);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+    await Channel.destroy({
+        where: {
+            ServerId: id,
+        },
+    })
+        .then(async () => {
+            await Server.destroy({
+                where: {
+                    id,
+                },
             })
-            .catch((error) => {
-                console.log(error);
-            });
-
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
+                .then(async () => {
+                    await UserServers.destroy({
+                        where: {
+                            ServerId: id,
+                        },
+                    });
+                    return res.sendStatus(200);
+                })
+                .catch((error) => {
+                    return res.status(500).json({ message: error.message });
+                });
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
+        });
 }
 
 export async function getServerChannels(req, res) {
     const { id } = req.params;
 
-    try {
-        const channels = await Channel.findAll({
-            attributes: ["id", "name"],
-            where: { serverId: id },
+    await Channel.findAll({
+        attributes: ["id", "name"],
+        where: { serverId: id },
+    })
+        .then((channels) => {
+            return res.json(channels);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-        res.json(channels);
-    } catch (e) {
-        return res.status(500).json({ message: e.message });
-    }
 }
 
 export async function getServerUsers(req, res) {
     const { id } = req.params;
 
-    try {
-        await Server.findOne({
-            where: { id: id },
-            include: {
-                model: User,
-                attributes: ["id", "username"]
-            }
+    await Server.findByPk(id, {
+        include: {
+            model: User,
+            attributes: ["id", "username"]
+        }
+    })
+        .then((server) => {
+            res.json(server.Users);
         })
-            .then((server) => {
-                res.json(server.Users);
-            });
-    } catch (e) {
-        return res.status(500).json({ message: e.message });
-    }
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
+        });
 }
 
 export async function addUserServer(req, res) {
     const { id } = req.params;
     const { userId } = req.body;
 
-    try {
-        let newUserServer = await UserServers.create(
-            {
-                ServerId: id,
-                UserId: userId,
-                joined: Date.now()
-            }
-        );
-        return res.json(newUserServer);
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
+    await UserServers.create(
+        {
+            ServerId: id,
+            UserId: userId,
+            joined: Date.now()
+        }
+    )
+        .then((userserver) => {
+            return res.json(userserver);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-    }
-    res.json("received");
 }
 
 export async function deleteUserServer(req, res) {
-    const { id } = req.params;
-    const { userId } = req.body;
+    const { id, userId } = req.params;
 
-    try {
-        await UserServers.destroy({
-            where: {
-                ServerId: id,
-                UserId: userId
-            },
+    await UserServers.destroy({
+        where: {
+            ServerId: id,
+            UserId: userId
+        },
+    })
+        .then(() => {
+            return res.sendStatus(200);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-        return res.sendStatus(204);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
 }

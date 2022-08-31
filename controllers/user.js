@@ -5,28 +5,25 @@ import { UserUserMessages } from "../models/userusermessages.js"
 
 export async function createUser(req, res) {
     const { username, password, email } = req.body;
-    let auxUser;
 
-    auxUser = await User.findOne({ where: { username: username } });
+    const auxUser = await User.findOne({ where: { username: username } });
     if (auxUser != null) {
-        return res.status(500);
+        return res.sendStatus(500);
     }
 
-    try {
-        let newUser = await User.create(
-            {
-                username,
-                password,
-                email
-            }
-        );
-        return res.json(newUser);
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
+    await User.create(
+        {
+            username,
+            password,
+            email
+        }
+    )
+        .then((user) => {
+            return res.json(user);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-    }
-    res.json("received");
 }
 
 export async function updateUser(req, res) {
@@ -51,7 +48,7 @@ export async function deleteUser(req, res) {
         const user = await User.findByPk(id);
         user.active = false;
         await user.save();
-        return res.sendStatus(204);
+        return res.sendStatus(200);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -60,102 +57,105 @@ export async function deleteUser(req, res) {
 export async function getUserFriends(req, res) {
     const { id } = req.params;
 
-    try {
-        const friends = await UserFriends.findAll({
-            attributes: ["FriendId"],
-            where: { UserId: id },
+    await UserFriends.findAll({
+        attributes: ["FriendId"],
+        where: { UserId: id },
+    })
+        .then((friends) => {
+            return res.json(friends);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-        res.json(friends);
-    } catch (e) {
-        return res.status(500).json({ message: e.message });
-    }
 }
 
 export async function getUserServers(req, res) {
     const { id } = req.params;
 
-    try {
-        const servers = await UserServers.findAll({
-            attributes: ["ServerId"],
-            where: { UserId: id },
+    await UserServers.findAll({
+        attributes: ["ServerId"],
+        where: { UserId: id },
+    })
+        .then((servers) => {
+            return res.json(servers);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-        res.json(servers);
-    } catch (e) {
-        return res.status(500).json({ message: e.message });
-    }
 }
 
 export async function joinServer(req, res) {
     const { id } = req.params;
     const { serverId } = req.body;
 
-    try {
-        let newUserServer = await UserServers.create(
-            {
-                UserId: id,
-                ServerId: serverId,
-                joined: Date.now()
-            }
-        );
-        return res.json(newUserServer);
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
+    await UserServers.create(
+        {
+            UserId: id,
+            ServerId: serverId,
+            joined: Date.now()
+        }
+    )
+        .then((user) => {
+            return res.json(user);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-    }
-    res.json("received");
 }
 
 export async function leaveServer(req, res) {
     const { id } = req.params;
     const { serverId } = req.body;
 
-    try {
-        await UserServers.destroy({
-            where: {
-                ServerId: serverId,
-                UserId: id
-            },
+    await UserServers.destroy({
+        where: {
+            ServerId: serverId,
+            UserId: id
+        },
+    })
+        .then(() => {
+            return res.sendStatus(200);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-        return res.sendStatus(204);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
 }
 
 export async function addFriend(req, res) {
     const { id } = req.params;
     const { userId } = req.body;
 
-    try {
-        let newFriend = await UserFriends.create(
-            {
-                UserId: id,
-                FriendId: userId,
-                accepted: false
-            }
-        );
-        return res.json(newFriend);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
+    await UserFriends.create(
+        {
+            UserId: id,
+            FriendId: userId,
+            accepted: false
+        }
+    )
+        .then((friend) => {
+            return res.json(friend);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
+        });
 }
 
 export async function deleteFriend(req, res) {
     const { id } = req.params;
     const { userId } = req.body;
 
-    try {
-        await UserServers.destroy({
-            where: {
-                UserId: id,
-                FriendId: userId
-            },
+    await UserServers.destroy({
+        where: {
+            UserId: id,
+            FriendId: userId
+        },
+    })
+        .then(() => {
+            return res.sendStatus(200);
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: error.message });
         });
-        return res.sendStatus(204);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
 }
 
 export async function acceptFriend(req, res) {

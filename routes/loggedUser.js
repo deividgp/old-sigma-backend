@@ -13,6 +13,6 @@ router.put("/addfriend", isAuthenticated, loggedUserControllers.addFriend);
 router.put("/acceptfriend", isAuthenticated, loggedUserControllers.acceptFriend);
 router.delete("/:id/deletefriend", isAuthenticated, loggedUserControllers.deleteFriend);
 router.delete("/:id/ignorefriend", isAuthenticated, loggedUserControllers.ignoreFriend);
-router.delete("/leaveserver", isAuthenticated, loggedUserControllers.leaveServer);
+router.delete("/:id/leaveserver", isAuthenticated, loggedUserControllers.leaveServer);
 
 export default router;
