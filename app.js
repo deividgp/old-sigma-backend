@@ -24,6 +24,7 @@ app.use(helmet());
 app.use(express.json());
 // For parsing application/x-www-form-urlencoded
 //app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', 1);
 app.use(cors({
     origin: origin,
     credentials: true
@@ -33,7 +34,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: "auto",
+        sameSite: "none",
+        secure: true,
         httpOnly: true,
         maxAge: 60 * 60 * 24 * 1000
     }
