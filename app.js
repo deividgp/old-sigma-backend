@@ -16,7 +16,7 @@ import isAdmin from "./utils/isAdmin.js";
 
 const app = express();
 const origin = process.env.ORIGIN || "http://localhost:3000";
-console.log(origin);
+
 // Middlewares
 app.use(morgan('combined'))
 app.use(helmet());
@@ -24,9 +24,7 @@ app.use(helmet());
 app.use(express.json());
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    credentials: true
-}));
+app.use(cors());
 app.use(session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
