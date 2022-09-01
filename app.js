@@ -24,7 +24,10 @@ app.use(helmet());
 app.use(express.json());
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: origin,
+    credentials: true
+}));
 app.use(session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
