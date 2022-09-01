@@ -2,7 +2,6 @@ import dotenv from "dotenv"
 dotenv.config();
 import sequelize from "./database.js"
 import addData from "./addData.js";
-//import passport from "./passport.js"
 import io from "./io.js";
 import { UserChannelMessage } from "./models/userchannelmessage.js";
 import { UserUserMessages } from "./models/userusermessages.js";
@@ -83,8 +82,6 @@ async function main() {
             io.sockets.emit("online_users", activeUsers);
         });
     });
-
-
 }
 
 await main();

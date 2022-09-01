@@ -11,7 +11,7 @@ export default async function addData() {
         .then(async (user1) => {
             await Server.create({ name: "Server1", description: "This is server number 1", OwnerId: user1.id })
                 .then(async (server) => {
-                    await Channel.create({ ServerId: server.id, name: "hi6666666666666" });
+                    await Channel.create({ ServerId: server.id, name: "Channel2" });
                     await UserServers.create({ UserId: user1.id, ServerId: server.id, joined: Date.now() });
 
                     await User.create({ username: "David", password: "hi1234", email: "hi1234@gmail.com" })
@@ -24,20 +24,20 @@ export default async function addData() {
                                     await UserServers.create({ UserId: user2.id, ServerId: server.id, joined: Date.now() });
                                     await UserServers.create({ UserId: user3.id, ServerId: server.id, joined: Date.now() });
 
-                                    await Channel.create({ ServerId: server.id, name: "hi5555555555" })
+                                    await Channel.create({ ServerId: server.id, name: "Channel2" })
                                         .then(async (channel) => {
-                                            await UserChannelMessage.create({ content: "hahahaha", UserId: user1.id, ChannelId: channel.id });
-                                            await UserChannelMessage.create({ content: "hahahaha2", UserId: user2.id, ChannelId: channel.id });
-                                            await UserChannelMessage.create({ content: "hahahaha3", UserId: user1.id, ChannelId: channel.id });
-                                            await UserChannelMessage.create({ content: "hahahaha4", UserId: user3.id, ChannelId: channel.id });
-                                            await UserChannelMessage.create({ content: "hahahaha5", UserId: user2.id, ChannelId: channel.id });
+                                            await UserChannelMessage.create({ content: "hi", UserId: user1.id, ChannelId: channel.id });
+                                            await UserChannelMessage.create({ content: "hi users", UserId: user2.id, ChannelId: channel.id });
+                                            await UserChannelMessage.create({ content: "hi everyone", UserId: user1.id, ChannelId: channel.id });
+                                            await UserChannelMessage.create({ content: "hello there", UserId: user3.id, ChannelId: channel.id });
+                                            await UserChannelMessage.create({ content: "hihi", UserId: user2.id, ChannelId: channel.id });
                                         });
-                                    await UserUserMessages.create({ content: "hihihi2", UserId: user1.id, MessageUserId: user3.id });
-                                    await UserUserMessages.create({ content: "hihihi3", UserId: user3.id, MessageUserId: user1.id });
-                                    await UserUserMessages.create({ content: "hihihi4", UserId: user1.id, MessageUserId: user3.id });
-                                    await UserUserMessages.create({ content: "hihihi5", UserId: user3.id, MessageUserId: user1.id });
-                                    await UserUserMessages.create({ content: "hihihi6", UserId: user1.id, MessageUserId: user3.id });
-                                    await UserUserMessages.create({ content: "hihihi7", UserId: user3.id, MessageUserId: user1.id });
+                                    await UserUserMessages.create({ content: "hi", UserId: user1.id, MessageUserId: user3.id });
+                                    await UserUserMessages.create({ content: "hi users", UserId: user3.id, MessageUserId: user1.id });
+                                    await UserUserMessages.create({ content: "hi everyone", UserId: user1.id, MessageUserId: user3.id });
+                                    await UserUserMessages.create({ content: "hello there", UserId: user3.id, MessageUserId: user1.id });
+                                    await UserUserMessages.create({ content: "hihi", UserId: user1.id, MessageUserId: user3.id });
+                                    await UserUserMessages.create({ content: "hihi", UserId: user3.id, MessageUserId: user1.id });
                                 })
                             await UserFriends.create({ accepted: false, UserId: user1.id, FriendId: user2.id });
                             //await UserFriends.create({ accepted: false, UserId: user2.id, FriendId: user1.id });

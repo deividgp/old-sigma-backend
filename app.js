@@ -23,7 +23,7 @@ app.use(helmet());
 // For parsing application/json
 app.use(express.json());
 // For parsing application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: origin,
     credentials: true
