@@ -33,7 +33,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        sameSite: "none"
+        sameSite: "none",
+        secure: true
     }
 }));
 app.use(cookieParser(process.env.COOKIE_SECRET))
