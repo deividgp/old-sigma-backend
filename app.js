@@ -15,6 +15,7 @@ import isAuthenticated from "./utils/isAuthenticated.js";
 import isAdmin from "./utils/isAdmin.js";
 
 const app = express();
+const origin = process.env.ORIGIN || "http://localhost:3000";
 
 // Middlewares
 app.use(morgan('combined'))
@@ -22,7 +23,11 @@ app.use(helmet());
 // For parsing application/json
 app.use(express.json());
 // For parsing application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin: origin,
+    credentials: true
+}));
 app.use(session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
