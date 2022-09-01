@@ -6,23 +6,30 @@ import { UserUserMessages } from "../models/userusermessages.js"
 export async function createUser(req, res) {
     const { username, password, email } = req.body;
 
-    const auxUser = await User.findOne({ where: { username: username } });
-    if (auxUser != null) {
-        return res.sendStatus(500);
-    }
-
-    await User.create(
-        {
-            username,
-            password,
-            email
-        }
-    )
-        .then((user) => {
-            return res.json(user);
+    await User.findOne({ where: { username: username } })
+        .then(async (userFound) => {
+            if (userFound != null) {
+                return res.sendStatus(500);
+            } else {
+                await User.create(
+                    {
+                        username,
+                        password,
+                        email
+                    }
+                )
+                    .then((user) => {
+                        req.login(user, () => {
+                            return res.json(user);
+                        });
+                    })
+                    .catch((error) => {
+                        return res.status(500).json({ message: error.message });
+                    });
+            }
         })
-        .catch((error) => {
-            return res.status(500).json({ message: error.message });
+        .catch(() => {
+            return res.sendStatus(500);
         });
 }
 

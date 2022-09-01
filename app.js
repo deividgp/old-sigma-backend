@@ -22,8 +22,6 @@ app.use(morgan('combined'))
 app.use(helmet());
 // For parsing application/json
 app.use(express.json());
-// For parsing application/x-www-form-urlencoded
-//app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', 1);
 app.use(cors({
     origin: origin,
@@ -34,10 +32,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        sameSite: "none",
-        secure: true,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : false,
+        secure: "auto",
         httpOnly: true,
-        maxAge: 60 * 60 * 24 * 1000
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 app.use(cookieParser(process.env.COOKIE_SECRET))

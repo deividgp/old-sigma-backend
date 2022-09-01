@@ -1,7 +1,6 @@
 import { UserChannelMessage } from "../models/userchannelmessage.js"
 import { Channel } from "../models/channel.js"
 import { User } from "../models/user.js"
-import uuid from "uuid4"
 
 export async function createChannel(req, res) {
     const { name, serverId } = req.body;

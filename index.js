@@ -10,8 +10,12 @@ const users = [];
 const activeUsers = [];
 
 async function main() {
-    await sequelize.sync({ force: true });
-    await addData();
+    if (process.env.NODE_ENV == "production") {
+        await sequelize.sync({ alter: true });
+    } else {
+        await sequelize.sync({ force: true });
+        await addData();
+    }
 
     io.use((socket, next) => {
         socket.userid = socket.handshake.auth.userid;

@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
 import { User } from "./user.js";
 import { Server } from "./server.js";

@@ -73,7 +73,7 @@ export async function addFriend(req, res) {
                 }
             })
                 .then(async (userfriend) => {
-                    if (userfriend !== null) throw "Relation already exists";
+                    if (userfriend !== null) throw new Error("Relation already exists");
 
                     await UserFriends.create(
                         {

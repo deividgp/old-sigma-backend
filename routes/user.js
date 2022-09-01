@@ -3,9 +3,9 @@ import * as userControllers from "../controllers/user.js";
 
 const router = Router()
 
+router.post("/newuser", userControllers.createUser);
 router.post("/:id", userControllers.joinServer);
 router.post("/:id", userControllers.addFriend);
-router.post("/", userControllers.createUser);
 router.put("/:id", userControllers.updateUser);
 router.put("/:id", userControllers.acceptFriend);
 router.delete("/:id", userControllers.deleteFriend);
