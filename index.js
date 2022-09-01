@@ -11,7 +11,11 @@ import { UserUserMessages } from "./models/userusermessages.js";
 
 const port = process.env.PORT || 4000;
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+});
 const users = [];
 const activeUsers = [];
 
