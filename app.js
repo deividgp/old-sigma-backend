@@ -33,8 +33,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        sameSite: "none",
-        secure: true
+        secure: true,
+        httpOnly: true,
+        sameSite: 'none',
+        maxAge: 60 * 60 * 24 * 1000
     }
 }));
 app.use(cookieParser(process.env.COOKIE_SECRET))
