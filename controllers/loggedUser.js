@@ -199,19 +199,42 @@ export async function joinServer(req, res) {
             name
         }
     })
-        .then((server) => {
+        .then(async (server) => {
             if (server == null) {
-
+                await Server.create(
+                    {
+                        name,
+                        OwnerId: req.user.id
+                    }
+                )
+                    .then(async (createdServer) => {
+                        await UserServers.create(
+                            {
+                                UserId: req.user.id,
+                                ServerId: createdServer.id,
+                                joined: Date.now()
+                            }
+                        )
+                            .then(() => {
+                                return res.json(createdServer.id);
+                            })
+                            .catch((error) => {
+                                return res.status(500).json({ message: error.message });
+                            });
+                    })
+                    .catch((error) => {
+                        return res.status(500).json({ message: error.message });
+                    });
             } else {
                 await UserServers.create(
                     {
                         UserId: req.user.id,
-                        ServerId: serverId,
+                        ServerId: server.id,
                         joined: Date.now()
                     }
                 )
-                    .then((user) => {
-                        return res.json(user);
+                    .then(() => {
+                        return res.json(server.id);
                     })
                     .catch((error) => {
                         return res.status(500).json({ message: error.message });

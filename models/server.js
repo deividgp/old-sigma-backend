@@ -16,7 +16,7 @@ export const Server = sequelize.define(
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     }
   },
   { timestamps: false }

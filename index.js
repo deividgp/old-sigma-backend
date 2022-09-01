@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-dotenv.config({ path: './config/.env' })
+dotenv.config();
 import sequelize from "./database.js"
 import addData from "./addData.js";
 import passport from "./passport.js"
@@ -25,8 +25,6 @@ async function main() {
     });
 
     io.on("connection", (socket) => {
-        console.log("USERID: " + socket.userid + " ID: " + socket.id);
-
         if (socket.userid != undefined) {
             const index = users.findIndex(user => user.userid == socket.userid);
 
