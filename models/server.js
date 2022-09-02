@@ -12,7 +12,8 @@ export const Server = sequelize.define(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     description: {
       type: DataTypes.TEXT,
