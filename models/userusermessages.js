@@ -24,7 +24,6 @@ export const UserUserMessages = sequelize.define(
   { timestamps: false }
 );
 
-//User.belongsToMany(User, { as: "MessageUsers", through: { model: UserUserMessage }});
 User.hasMany(UserUserMessages);
 UserUserMessages.belongsTo(User, {
   as: "MessageUser"
@@ -32,3 +31,5 @@ UserUserMessages.belongsTo(User, {
 
 User.hasMany(UserUserMessages);
 UserUserMessages.belongsTo(User);
+
+//User.belongsToMany(User, { as: "MessageUsers", through: { model: UserUserMessage }});

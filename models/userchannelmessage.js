@@ -25,11 +25,11 @@ export const UserChannelMessage = sequelize.define(
   { timestamps: false }
 );
 
-/*User.belongsToMany(Channel, { through: { model: UserChannelMessage }});
-Channel.belongsToMany(User, { through: { model: UserChannelMessage }});*/
-
 User.hasMany(UserChannelMessage);
 UserChannelMessage.belongsTo(User);
 
 Channel.hasMany(UserChannelMessage);
 UserChannelMessage.belongsTo(Channel);
+
+/*User.belongsToMany(Channel, { through: { model: UserChannelMessage }});
+Channel.belongsToMany(User, { through: { model: UserChannelMessage }});*/
