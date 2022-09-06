@@ -1,7 +1,6 @@
 import { User } from "../models/user.js"
 import { UserServers } from "../models/userservers.js"
 import { UserFriends } from "../models/userfriends.js"
-import { UserUserMessages } from "../models/userusermessages.js"
 
 export async function createUser(req, res) {
     const { username, password, email } = req.body;

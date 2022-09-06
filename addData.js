@@ -40,7 +40,6 @@ export default async function addData() {
                                     await UserUserMessages.create({ content: "hihi", UserId: user3.id, MessageUserId: user1.id });
                                 })
                             await UserFriends.create({ accepted: false, UserId: user1.id, FriendId: user2.id });
-                            //await UserFriends.create({ accepted: false, UserId: user2.id, FriendId: user1.id });
                         })
                 })
             await Server.create({ name: "Server2", description: "This is server number 2", OwnerId: user1.id }).then(async (server) => {
