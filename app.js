@@ -2,6 +2,7 @@ import express from "express"
 import helmet from "helmet"
 import morgan from "morgan"
 import cors from "cors"
+import multer from "multer"
 import session from "express-session"
 import channelRoutes from "./routes/channel.js";
 import serverRoutes from "./routes/server.js";
@@ -15,6 +16,7 @@ import isAuthenticated from "./utils/isAuthenticated.js";
 import isAdmin from "./utils/isAdmin.js";
 
 const app = express();
+const upload = multer();
 const origin = process.env.ORIGIN || "http://localhost:3000";
 
 // Middlewares
@@ -22,6 +24,7 @@ app.use(morgan('combined'))
 app.use(helmet());
 // For parsing application/json
 app.use(express.json());
+app.use(upload.any());
 app.set('trust proxy', 1);
 app.use(cors({
     origin: origin,

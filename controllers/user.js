@@ -1,6 +1,8 @@
 import { User } from "../models/user.js"
 import { UserServers } from "../models/userservers.js"
 import { UserFriends } from "../models/userfriends.js"
+import faceClient from "../recognition.js";
+import { FaceClient, PersonGroupPerson } from "@azure/cognitiveservices-face";
 
 export async function createUser(req, res) {
     const { username, password, email } = req.body;
@@ -14,17 +16,29 @@ export async function createUser(req, res) {
                     {
                         username,
                         password,
-                        email
+                        email,
+                        avatar: req.files[0].buffer
                     }
                 )
                     .then((user) => {
-                        req.login(user, () => {
-                            return res.json(user);
+                        const person = new PersonGroupPerson(faceClient); 
+                        person.create("sigma", {
+                            name: user.username
+                        }).then((personAux) => {
+                            person.addFaceFromStream("sigma", personAux.personId, user.avatar)
+                            .then(() => {
+                                faceClient.personGroup.train("sigma");
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            })
+                            .finally(() => {
+                                req.login(user, () => {
+                                    return res.json(user);
+                                });
+                            })
                         });
                     })
-                    .catch((error) => {
-                        return res.status(500).json({ message: error.message });
-                    });
             }
         })
         .catch(() => {

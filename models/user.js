@@ -29,8 +29,8 @@ export const User = sequelize.define(
             allowNull: false,
             defaultValue: "User"
         },
-        profilePicture: {
-            type: DataTypes.STRING,
+        avatar: {
+            type: DataTypes.BLOB,
             allowNull: true
         },
         active: {

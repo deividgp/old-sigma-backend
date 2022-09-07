@@ -28,7 +28,10 @@ passport.serializeUser(function (user, done) {
 
 // Get user from the session
 passport.deserializeUser(function (id, done) {
-    User.findByPk(id).then(function (user) { done(null, user); });
+    User.findByPk(id).then((user) =>
+    {
+        done(null, user);
+    });
 });
 
 export default passport;
