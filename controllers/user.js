@@ -1,7 +1,7 @@
 import { User } from "../models/user.js"
 import { UserServers } from "../models/userservers.js"
 import { UserFriends } from "../models/userfriends.js"
-import faceClient from "../recognition.js";
+import faceClient from "../faceClient.js";
 import { FaceClient, PersonGroupPerson } from "@azure/cognitiveservices-face";
 
 export async function createUser(req, res) {

@@ -8,6 +8,10 @@ router.post('/login', isNotAuthenticated, passport.authenticate('local'), (req, 
     res.status(200).send(req.user)
 });
 
+router.post("/loginface", isNotAuthenticated, (req, res) => {
+    console.log(req.files[0]);
+});
+
 router.get('/logout', isAuthenticated, function (req, res) {
     req.logout(function (err) {
         if (err) { return next(err); }

@@ -1,6 +1,7 @@
 import { User } from "./models/user.js";
-import faceClient from "./recognition.js";
+import faceClient from "./faceClient.js";
 import { Op } from "sequelize"
+import { Face } from "@azure/cognitiveservices-face/esm/faceClient.js";
 
 export default async function recognition() {
     faceClient.personGroup.deleteMethod("sigma")
@@ -39,4 +40,28 @@ export default async function recognition() {
                     console.log("Unable to create person group");
                 })
         })
+}
+
+async function DetectFaceRecognize(file){
+    const sufficientQualityFaces = [];
+    const face = new Face(faceClient);
+    face.detectWithStream(file, {
+        recognitionModel: "recognition_04",
+        detectionModel: "detection_03",
+        returnFaceAttributes: "qualityForRecognition"
+    })
+    .then(faces => {
+        faces.forEach(face => {
+            const quality = face.faceAttributes.qualityForRecognition;
+            if(quality == "Medium" || quality == "High"){
+                sufficientQualityFaces.push(face);
+            }
+        });
+    })
+}
+
+async function FindSimilar(file){
+    const faces = DetectFaceRecognize(file);
+    const face = new Face(faceClient);
+    const results = face.identify
 }
