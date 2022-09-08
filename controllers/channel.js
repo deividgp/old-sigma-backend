@@ -5,18 +5,17 @@ import { User } from "../models/user.js"
 export async function createChannel(req, res) {
     const { name, serverId } = req.body;
 
-    await Channel.create(
-        {
-            name,
-            ServerId: serverId
-        }
-    )
-        .then((channel) => {
-            return res.json(channel);
-        })
-        .catch((error) => {
-            return res.status(500).json({ message: error.message });
-        });
+    try {
+        const channel = await Channel.create(
+            {
+                name,
+                ServerId: serverId
+            }
+        );
+        return res.json(channel);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
 }
 
 export async function updateChannel(req, res) {
@@ -37,36 +36,34 @@ export async function updateChannel(req, res) {
 export async function deleteChannel(req, res) {
     const { id } = req.params;
 
-    await Channel.destroy({
-        where: {
-            id
-        },
-    })
-        .then(() => {
-            return res.sendStatus(200);
-        })
-        .catch((error) => {
-            return res.status(500).json({ message: error.message });
+    try {
+        await Channel.destroy({
+            where: {
+                id
+            }
         });
+        return res.sendStatus(200);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
 }
 
 export async function getChannelMessages(req, res) {
     const { id } = req.params;
 
-    await Channel.findOne({
-        where: { id: id },
-        include: {
-            model: UserChannelMessage,
+    try {
+        const channel = await Channel.findOne({
+            where: { id: id },
             include: {
-                model: User,
-                attributes: ["id", "username"]
+                model: UserChannelMessage,
+                include: {
+                    model: User,
+                    attributes: ["id", "username"]
+                }
             }
-        }
-    })
-        .then((channel) => {
-            return res.json(channel.UserChannelMessages);
-        })
-        .catch((error) => {
-            return res.status(500).json({ message: error.message });
         });
+        return res.json(channel.UserChannelMessages);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
 }

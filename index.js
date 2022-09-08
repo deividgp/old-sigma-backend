@@ -5,7 +5,7 @@ import addData from "./addData.js";
 import io from "./io.js";
 import { UserChannelMessage } from "./models/userchannelmessage.js";
 import { UserUserMessages } from "./models/userusermessages.js";
-import recognition from "./recognitionProcess.js";
+import { recognition } from "./recognition.js";
 
 const users = [];
 const activeUsers = [];
@@ -17,7 +17,7 @@ async function main() {
         await sequelize.sync({ force: true });
         await addData();
     }
-    //await recognition();
+    await createPersonGroup();
     io.use((socket, next) => {
         socket.userid = socket.handshake.auth.userid;
         next();
