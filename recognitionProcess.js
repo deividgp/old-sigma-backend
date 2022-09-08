@@ -1,7 +1,7 @@
 import { User } from "./models/user.js";
 import faceClient from "./faceClient.js";
 import { Op } from "sequelize"
-import { Face } from "@azure/cognitiveservices-face/esm/faceClient.js";
+import { Face } from "@azure/cognitiveservices-face";
 
 export default async function recognition() {
     faceClient.personGroup.deleteMethod("sigma")
