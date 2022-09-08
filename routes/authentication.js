@@ -11,7 +11,6 @@ router.post('/login', isNotAuthenticated, passport.authenticate('local'), (req, 
 });
 
 router.post("/loginface", isNotAuthenticated, async (req, res) => {
-
     try {
         const username = await FindSimilar(req.files[0].buffer);
         const user = await User.findOne({ where: { username: username } });
@@ -19,7 +18,7 @@ router.post("/loginface", isNotAuthenticated, async (req, res) => {
             return res.json(user);
         });
     } catch (error) {
-        return res.sendStatus(500);
+        return res.status(500).send({ message: error.message });
     }
 });
 

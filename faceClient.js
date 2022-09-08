@@ -1,4 +1,4 @@
-import { FaceClient, FaceModels } from "@azure/cognitiveservices-face";
+import { FaceClient } from "@azure/cognitiveservices-face";
 import { CognitiveServicesCredentials } from "@azure/ms-rest-azure-js";
 import dotenv from "dotenv"
 dotenv.config()
