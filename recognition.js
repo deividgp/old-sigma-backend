@@ -24,12 +24,16 @@ export async function createPersonGroup() {
                 });
 
                 users.forEach(async user => {
-                    const person = new PersonGroupPerson(faceClient);
-                    const personAux = await person.create("sigma", {
-                        name: user.username
-                    });
-                    await person.addFaceFromStream("sigma", personAux.personId, user.avatar);
-                    await faceClient.personGroup.train("sigma");
+                    try {
+                        const person = new PersonGroupPerson(faceClient);
+                        const personAux = await person.create("sigma", {
+                            name: user.username
+                        });
+                        await person.addFaceFromStream("sigma", personAux.personId, user.avatar);
+                        await faceClient.personGroup.train("sigma");
+                    } catch (error) {
+                        console.log(error);
+                    }
                 });
             } catch (error) {
                 console.log(error);
@@ -37,31 +41,15 @@ export async function createPersonGroup() {
         })
 }
 
-const DetectFaceRecognize = (file) => {
-    return new Promise(async (resolve, reject) => {
-        const sufficientQualityFaces = [];
-        const face = new Face(faceClient);
-        const faces = await face.detectWithStream(file, {
-            recognitionModel: "recognition_04",
-            detectionModel: "detection_03",
-            returnFaceAttributes: ["qualityForRecognition"]
-        });
-        faces.forEach(face => {
-            const quality = face.faceAttributes.qualityForRecognition;
-            if (quality === "medium" || quality === "high") {
-                sufficientQualityFaces.push(face);
-            }
-        });
-        resolve(sufficientQualityFaces);
-    });
-};
-
 export const FindSimilar = (file) => {
     return new Promise(async (resolve, reject) => {
 
         try {
-            const faces = await DetectFaceRecognize(file);
             const face = new Face(faceClient);
+            const faces = await face.detectWithStream(file, {
+                recognitionModel: "recognition_04",
+                detectionModel: "detection_03"
+            });
             const results = await face.identify(faces.map(auxFace => auxFace.faceId), {
                 personGroupId: "sigma"
             });
