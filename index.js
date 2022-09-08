@@ -5,7 +5,7 @@ import addData from "./addData.js";
 import io from "./io.js";
 import { UserChannelMessage } from "./models/userchannelmessage.js";
 import { UserUserMessages } from "./models/userusermessages.js";
-import { recognition } from "./recognition.js";
+import { createPersonGroup } from "./recognition.js";
 
 const users = [];
 const activeUsers = [];
